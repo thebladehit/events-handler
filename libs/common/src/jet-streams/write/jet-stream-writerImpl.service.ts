@@ -29,6 +29,8 @@ export class JetStreamWriterServiceImpl implements JetStreamWriterService {
 
   async createStream(streamName: string, subjects: string[]): Promise<void> {
     try {
+      const info = await this.jsm.streams.info(streamName);
+      if (info) return;
       await this.jsm.streams.add({
         name: streamName,
         subjects: subjects,
