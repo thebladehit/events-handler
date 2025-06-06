@@ -1,2 +1,2 @@
-export * from './nats';
+export * from './jet-streams';
 export * from './types';

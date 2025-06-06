@@ -3,7 +3,7 @@ import { GatewayController } from './gateway.controller';
 import { GatewayService } from './gateway.service';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
-import { NatsModule } from '@app/common';
+import { JetStreamWriterModule, STREAM_NAME, SubjectName } from '@app/common';
 
 @Module({
   imports: [
@@ -14,7 +14,10 @@ import { NatsModule } from '@app/common';
         NATS_URL: Joi.string().required(),
       }),
     }),
-    NatsModule,
+    JetStreamWriterModule.forRoot({
+      streamName: STREAM_NAME,
+      subjects: [...Object.values(SubjectName)],
+    }),
   ],
   controllers: [GatewayController],
   providers: [GatewayService],

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Event, NatsService, Source, SubjectName } from '@app/common';
+import { Event, JetStreamWriterService, Source, SubjectName } from '@app/common';
 
 @Injectable()
 export class GatewayService {
-  constructor(private readonly natsService: NatsService) {}
+  constructor(private readonly jetStreamWriterService: JetStreamWriterService) {}
 
   async handleEvent(events: Event[]): Promise<void> {
     const requests = [];
@@ -12,7 +12,7 @@ export class GatewayService {
         event.source === Source.TIKTOK
           ? SubjectName.TIKTOK
           : SubjectName.FACEBOOK;
-      requests.push(this.natsService.publish(subjectName, event));
+      requests.push(this.jetStreamWriterService.publish(subjectName, event));
     }
     await Promise.allSettled(requests);
   }
