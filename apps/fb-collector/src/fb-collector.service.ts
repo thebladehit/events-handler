@@ -1,11 +1,13 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { FacebookEvent, JetStreamReaderService } from '@app/common';
 import { FacebookRepository } from '@app/common/repositories';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class FbCollectorService implements OnModuleInit {
-  private batchSize: number;
+export class FbCollectorService implements OnModuleInit, OnModuleDestroy {
+  private readonly batchSize: number;
+  private isRunning = false;
+  private inProgressCount: number = 0;
 
   constructor(
     private readonly jetStreamReaderService: JetStreamReaderService,
@@ -15,12 +17,21 @@ export class FbCollectorService implements OnModuleInit {
     this.batchSize = this.configService.get('BATCH_SIZE');
   }
 
-  async onModuleInit() {
+  onModuleInit() {
+    this.isRunning = true;
     this.consumeLoop();
   }
 
+  async onModuleDestroy() {
+    this.isRunning = false;
+    while (this.inProgressCount) {
+      await this.wait(0.5);
+    }
+  }
+
   private async consumeLoop() {
-    while (true) {
+    while (this.isRunning) {
+      this.inProgressCount++;
       try {
         const events = await this.jetStreamReaderService.pull(this.batchSize);
         if (events.length === 0) {
@@ -32,6 +43,8 @@ export class FbCollectorService implements OnModuleInit {
       } catch (err) {
         // TODO add logger
         console.error(err);
+      } finally {
+        this.inProgressCount--;
       }
     }
   }
