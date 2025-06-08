@@ -1,5 +1,4 @@
-import { TiktokEvent } from '@app/common/types/events/tiktok.types';
-import { FacebookEvent } from '@app/common/types/events/facebook.types';
+import { FacebookEvent, TiktokEvent } from '@app/common/types';
 
 export type FunnelStage = 'top' | 'bottom';
 export type Event = FacebookEvent | TiktokEvent;

@@ -24,6 +24,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
+    },
+    "fb-collector": {
+      "type": "application",
+      "root": "apps/fb-collector",
+      "entryFile": "main",
+      "sourceRoot": "apps/fb-collector/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/fb-collector/tsconfig.app.json"
+      }
     }
   }
 }
