@@ -16,7 +16,6 @@ import { JetStreamWriterModule, STREAM_NAME, SubjectName } from '@app/common';
     }),
     JetStreamWriterModule.forRoot({
       streamName: STREAM_NAME,
-      subjects: [...Object.values(SubjectName)],
     }),
   ],
   controllers: [GatewayController],

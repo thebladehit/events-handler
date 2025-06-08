@@ -17,6 +17,7 @@ import { RepositoriesModule } from '@app/common/repositories';
       validationSchema: Joi.object({
         PORT: Joi.number().required(),
         NATS_URL: Joi.string().required(),
+        BATCH_SIZE: Joi.number().required(),
       }),
     }),
     JetStreamReadModule.forRoot({

@@ -9,7 +9,7 @@ import {
   RetentionPolicy,
 } from 'nats';
 import { ConfigService } from '@nestjs/config';
-import { JetStreamWriterService } from '@app/common';
+import { JetStreamWriterService, SubjectName } from '@app/common';
 
 @Injectable()
 export class JetStreamWriterServiceImpl implements JetStreamWriterService {
@@ -27,19 +27,21 @@ export class JetStreamWriterServiceImpl implements JetStreamWriterService {
     this.jsm = await this.js.jetstreamManager();
   }
 
-  async createStream(streamName: string, subjects: string[]): Promise<void> {
+  async createStream(streamName: string): Promise<void> {
     try {
-      const info = await this.jsm.streams.info(streamName);
-      if (info) return;
-      await this.jsm.streams.add({
-        name: streamName,
-        subjects: subjects,
-        storage: StorageType.File,
-        retention: RetentionPolicy.Limits,
-      });
+       await this.jsm.streams.info(streamName);
     } catch (err) {
-      // TODO add logger
-      console.error(err);
+      if (Number(err.code) === 404) {
+        await this.jsm.streams.add({
+          name: streamName,
+          subjects: [...Object.values(SubjectName)],
+          storage: StorageType.File,
+          retention: RetentionPolicy.Limits,
+        });
+      } else {
+        // TODO add logger
+        console.error(err);
+      }
     }
   }
 

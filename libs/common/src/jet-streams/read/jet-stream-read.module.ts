@@ -19,7 +19,7 @@ export class JetStreamReadModule {
           useFactory: async (configService: ConfigService) => {
             const service = new JetStreamReaderServiceImpl(configService);
             await service.connect();
-            await service.createStream(options.streamName, [options.subject]);
+            await service.createStream(options.streamName);
             await service.setupConsumer(options.streamName, options.durableName, options.subject);
             return service;
           },
