@@ -1,5 +1,5 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { FacebookEvent, JetStreamReaderService } from '@app/common';
+import { FacebookEvent, JetStreamReaderService, wait } from '@app/common';
 import { FacebookRepository } from '@app/common/repositories';
 import { ConfigService } from '@nestjs/config';
 
@@ -25,7 +25,7 @@ export class FbCollectorService implements OnModuleInit, OnModuleDestroy {
   async onModuleDestroy() {
     this.isRunning = false;
     while (this.inProgressCount) {
-      await this.wait(0.5);
+      await wait(0.5);
     }
   }
 
@@ -35,7 +35,7 @@ export class FbCollectorService implements OnModuleInit, OnModuleDestroy {
       try {
         const events = await this.jetStreamReaderService.pull(this.batchSize);
         if (events.length === 0) {
-          await this.wait(1);
+          await wait(1);
           continue;
         }
         await this.fbRepository.saveMany(events as FacebookEvent[]);
@@ -47,9 +47,5 @@ export class FbCollectorService implements OnModuleInit, OnModuleDestroy {
         this.inProgressCount--;
       }
     }
-  }
-
-  private async wait(seconds: number): Promise<void> {
-    return new Promise((res) => setTimeout(res, seconds * 1000));
   }
 }
