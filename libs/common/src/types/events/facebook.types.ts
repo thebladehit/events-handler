@@ -1,14 +1,13 @@
 import { FunnelStage, Source } from '@app/common';
 
-export type FacebookTopEventType =
-  | 'ad.view'
-  | 'page.like'
-  | 'comment'
-  | 'video.view';
-export type FacebookBottomEventType =
-  | 'ad.click'
-  | 'form.submission'
-  | 'checkout.complete';
+export const GENDER = ['male', 'female', 'non-binary'] as const;
+export const FACEBOOK_TOP_EVENT_TYPE = ['ad.view', 'page.like', 'comment', 'video.view'] as const;
+export const FACEBOOK_BOTTOM_EVENT_TYPE = [ 'ad.click', 'form.submission', 'checkout.complete'] as const;
+
+export type Gender = typeof GENDER[number];
+
+export type FacebookTopEventType = typeof FACEBOOK_TOP_EVENT_TYPE[number];
+export type FacebookBottomEventType = typeof FACEBOOK_BOTTOM_EVENT_TYPE[number];
 export type FacebookEventType = FacebookTopEventType | FacebookBottomEventType;
 
 export interface FacebookUserLocation {
@@ -20,7 +19,7 @@ export interface FacebookUser {
   userId: string;
   name: string;
   age: number;
-  gender: 'male' | 'female' | 'non-binary';
+  gender: Gender;
   location: FacebookUserLocation;
 }
 

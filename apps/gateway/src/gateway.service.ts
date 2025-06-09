@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { Event, JetStreamWriterService, Source, SubjectName } from '@app/common';
+import { JetStreamWriterService, Source, SubjectName } from '@app/common';
+import { EventDto } from './dto/event.dto';
 
 @Injectable()
 export class GatewayService {
   constructor(private readonly jetStreamWriterService: JetStreamWriterService) {}
 
-  async handleEvent(events: Event[]): Promise<void> {
+  async handleEvent(events: EventDto[]): Promise<void> {
     const requests = [];
     for (const event of events) {
       const subjectName =
