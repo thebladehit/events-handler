@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import {
-  connect,
   JetStreamClient,
   JetStreamManager,
   JSONCodec,
   NatsConnection,
-  RetentionPolicy,
+  connect,
   StorageType,
+  RetentionPolicy,
 } from 'nats';
 import { ConfigService } from '@nestjs/config';
-import { SubjectName } from '@app/common/types';
+import { JetStreamWriterService, SubjectName } from '@app/common';
 
 @Injectable()
-export class NatsService {
+export class JetStreamWriterServiceImpl implements JetStreamWriterService {
   private nc: NatsConnection;
   private js: JetStreamClient;
   private jsm: JetStreamManager;
@@ -24,22 +24,24 @@ export class NatsService {
     const server_url = this.configService.get<string>('NATS_URL');
     this.nc = await connect({ servers: [server_url] });
     this.js = this.nc.jetstream();
+    this.jsm = await this.js.jetstreamManager();
   }
 
-  async createStreams(): Promise<void> {
-    this.jsm = await this.nc.jetstreamManager();
+  async createStream(streamName: string): Promise<void> {
     try {
-      for (const subject of Object.values(SubjectName)) {
+       await this.jsm.streams.info(streamName);
+    } catch (err) {
+      if (Number(err.code) === 404) {
         await this.jsm.streams.add({
-          name: subject,
-          subjects: [subject],
+          name: streamName,
+          subjects: [...Object.values(SubjectName)],
           storage: StorageType.File,
           retention: RetentionPolicy.Limits,
         });
+      } else {
+        // TODO add logger
+        console.error(err);
       }
-    } catch (err) {
-      // TODO add logger
-      console.error(err);
     }
   }
 

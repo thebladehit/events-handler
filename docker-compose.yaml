@@ -22,6 +22,19 @@ services:
     depends_on:
       - nats
 
+  fb-collector:
+    build:
+      context: .
+      dockerfile: ./apps/fb-collector/Dockerfile
+      target: development
+    env_file:
+      - ./apps/fb-collector/.env
+    command: sh -c "npx prisma migrate deploy --schema=libs/common/src/prisma/ && npm run start:fb-collector:dev"
+    ports:
+      - '3002:3002'
+    depends_on:
+      - nats
+
   nats:
     image: nats:latest
     ports:
@@ -34,5 +47,18 @@ services:
       -sd /data
       -m 8222
 
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1111
+      POSTGRES_DB: events
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
 volumes:
   nats-data:
+  postgres_data:
