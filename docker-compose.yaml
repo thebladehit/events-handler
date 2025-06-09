@@ -35,6 +35,19 @@ services:
     depends_on:
       - nats
 
+  ttk-collector:
+    build:
+      context: .
+      dockerfile: ./apps/ttk-collector/Dockerfile
+      target: development
+    env_file:
+      - ./apps/ttk-collector/.env
+    command: sh -c "npx prisma migrate deploy --schema=libs/common/src/prisma/ && npm run start:ttk-collector:dev"
+    ports:
+      - '3003:3003'
+    depends_on:
+      - nats
+
   nats:
     image: nats:latest
     ports:

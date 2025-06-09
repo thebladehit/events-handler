@@ -1,17 +1,17 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { FacebookEvent, JetStreamReaderService, wait } from '@app/common';
-import { FacebookRepository } from '@app/common/repositories';
+import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { JetStreamReaderService, TiktokEvent, wait } from '@app/common';
+import { TiktokRepository } from '@app/common/repositories';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class FbCollectorService implements OnModuleInit, OnModuleDestroy {
+export class TtkCollectorService implements OnModuleInit, OnModuleDestroy {
   private readonly batchSize: number;
   private isRunning = false;
   private inProgressCount: number = 0;
 
   constructor(
     private readonly jetStreamReaderService: JetStreamReaderService,
-    private readonly fbRepository: FacebookRepository,
+    private readonly ttkRepository: TiktokRepository,
     private readonly configService: ConfigService
   ) {
     this.batchSize = this.configService.get('BATCH_SIZE');
@@ -38,7 +38,7 @@ export class FbCollectorService implements OnModuleInit, OnModuleDestroy {
           await wait(1);
           continue;
         }
-        await this.fbRepository.saveMany(events as FacebookEvent[]);
+        await this.ttkRepository.saveMany(events as TiktokEvent[]);
         this.jetStreamReaderService.acknowledgeEvents();
       } catch (err) {
         // TODO add logger
