@@ -42,6 +42,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/ttk-collector/tsconfig.app.json"
       }
+    },
+    "reporter": {
+      "type": "application",
+      "root": "apps/reporter",
+      "entryFile": "main",
+      "sourceRoot": "apps/reporter/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/reporter/tsconfig.app.json"
+      }
     }
   }
 }

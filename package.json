@@ -12,6 +12,7 @@
     "start:gateway:dev": "nest start gateway --watch",
     "start:fb-collector:dev": "nest start fb-collector --watch",
     "start:ttk-collector:dev": "nest start ttk-collector --watch",
+    "start:reporter:dev": "nest start reporter --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/apps/events-handler/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
