@@ -1,8 +1,9 @@
-import { FacebookEvent, mapEventToPrismaType } from '@app/common';
+import { FacebookEvent } from '@app/common';
 import { FacebookRepository } from './interfaces';
 import { PrismaService } from '@app/common/prisma';
 import { Injectable } from '@nestjs/common';
 import { FacebookEventType } from '@prisma/client';
+import { mapEventToPrismaType } from '@app/common/utils';
 
 @Injectable()
 export class FacebookRepositoryImpl implements FacebookRepository {
