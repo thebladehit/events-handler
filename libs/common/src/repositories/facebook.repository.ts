@@ -21,20 +21,26 @@ export class FacebookRepositoryImpl implements FacebookRepository {
     });
 
     await this.prismaService.facebookEvent.createMany({
-      data: events.map((event) => ({
-        id: event.eventId,
-        timestamp: event.timestamp,
-        source: event.source.toUpperCase() as unknown as Source,
-        funnelStage: event.funnelStage.toUpperCase() as unknown as FunnelStage,
-        eventType: event.eventType.replace('.', '_').toUpperCase() as unknown as FacebookEventType,
-        userId: event.data.user.userId,
-        engagement: JSON.stringify(event.data.engagement),
-      })),
+      data: events.map(this.mapFacebookEvent),
       skipDuplicates: true,
     });
   }
 
   get(): Promise<any> {
     return Promise.resolve(undefined);
+  }
+
+  private mapFacebookEvent(event: FacebookEvent) {
+    return {
+      id: event.eventId,
+      timestamp: event.timestamp,
+      source: event.source.toUpperCase() as unknown as Source,
+      funnelStage: event.funnelStage.toUpperCase() as unknown as FunnelStage,
+      eventType: event.eventType
+        .replace('.', '_')
+        .toUpperCase() as unknown as FacebookEventType,
+      userId: event.data.user.userId,
+      engagement: JSON.stringify(event.data.engagement),
+    };
   }
 }
