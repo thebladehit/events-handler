@@ -1,8 +1,9 @@
 import { TiktokRepository } from './interfaces';
 import { Injectable } from '@nestjs/common';
-import { mapEventToPrismaType, TiktokEvent } from '@app/common';
+import { TiktokEvent } from '@app/common';
 import { PrismaService } from '@app/common/prisma';
 import { TiktokEventType } from '@prisma/client';
+import { mapEventToPrismaType } from '@app/common/utils';
 
 @Injectable()
 export class TiktokRepositoryImpl implements TiktokRepository {
