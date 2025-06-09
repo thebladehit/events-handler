@@ -1,6 +1,7 @@
 import { FacebookEvent, TiktokEvent } from '@app/common/types';
 
-export type FunnelStage = 'top' | 'bottom';
+export const FUNNEL_STAGE = ['top', 'bottom'] as const;
+export type FunnelStage = typeof FUNNEL_STAGE[number];
 export type Event = FacebookEvent | TiktokEvent;
 
 export enum Source {
