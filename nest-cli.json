@@ -33,6 +33,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/fb-collector/tsconfig.app.json"
       }
+    },
+    "ttk-collector": {
+      "type": "application",
+      "root": "apps/ttk-collector",
+      "entryFile": "main",
+      "sourceRoot": "apps/ttk-collector/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/ttk-collector/tsconfig.app.json"
+      }
     }
   }
 }
