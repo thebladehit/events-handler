@@ -1,12 +1,15 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ReporterService } from './reporter.service';
+import { EventsReportDto } from './dto/events-report.dto';
 
-@Controller()
+@Controller('/reports')
 export class ReporterController {
   constructor(private readonly reporterService: ReporterService) {}
 
-  @Get()
-  getHello(): string {
-    return this.reporterService.getHello();
+  @Get('/events')
+  getEventsCount(@Query() dto: EventsReportDto) {
+    return this.reporterService.getEventsCount(dto);
   }
+
+
 }

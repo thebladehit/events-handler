@@ -3,6 +3,7 @@ import { ReporterController } from './reporter.controller';
 import { ReporterService } from './reporter.service';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
+import { RepositoriesModule } from '@app/common/repositories';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import * as Joi from 'joi';
         DATABASE_URL: Joi.string().required(),
       }),
     }),
+    RepositoriesModule,
   ],
   controllers: [ReporterController],
   providers: [ReporterService],
