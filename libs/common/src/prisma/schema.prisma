@@ -28,27 +28,64 @@ enum FacebookEventType {
 }
 
 model FacebookEvent {
-  id           String             @id
-  timestamp    DateTime
-  source       Source
-  funnelStage  FunnelStage
-  eventType    FacebookEventType
-  userId       String
-  user         FacebookUser       @relation(fields: [userId], references: [id])
-  engagement   Json
+  id          String            @id
+  timestamp   DateTime
+  source      Source
+  funnelStage FunnelStage       @map("funnel_stage")
+  eventType   FacebookEventType @map("event_type")
+  userId      String            @map("user_id")
+  user        FacebookUser      @relation(fields: [userId], references: [id])
+
+  engagement FacebookEngagement?
 
   @@map("facebook_events")
 }
 
 model FacebookUser {
-  id       String                @id
+  id       String          @id
   name     String
   age      Int
   gender   String
-  location Json
+  location UserLocation?
   events   FacebookEvent[]
 
+  country String?
+  city    String?
+
   @@map("facebook_users")
+}
+
+model FacebookEngagement {
+  id String @id @default(uuid())
+
+  // TOP engagement
+  actionTime DateTime? @map("action_time")
+  referer    String?
+  videoId    String?   @map("video_id")
+
+  // BOTTOM engagement
+  adId           String? @map("ad_id")
+  campaignId     String? @map("campaign_id")
+  clickPosition  String? @map("click_position")
+  device         String?
+  browser        String?
+  purchaseAmount String? @map("purchase_amount")
+
+  eventId String        @unique @map("event_id")
+  event   FacebookEvent @relation(fields: [eventId], references: [id])
+
+  @@map("facebook_engagements")
+}
+
+model UserLocation {
+  id String @id @default(uuid())
+  country String
+  city String
+
+  userId String @unique @map("user_id")
+  user FacebookUser @relation(fields: [userId], references: [id])
+
+  @@map("user_locations")
 }
 
 enum TiktokEventType {
@@ -66,17 +103,43 @@ model TiktokUser {
   username  String
   followers Int
   events    TiktokEvent[]
+
+  @@map("tiktok_users")
 }
 
 model TiktokEvent {
   id          String          @id
   timestamp   DateTime
   source      Source
-  funnelStage FunnelStage
-  eventType   TiktokEventType
+  funnelStage FunnelStage     @map("funnel_stage")
+  eventType   TiktokEventType @map("event_type")
 
-  userId String
+  userId String     @map("user_id")
   user   TiktokUser @relation(fields: [userId], references: [id])
 
-  engagement Json
+  engagement TiktokEngagement?
+
+  @@map("tiktok_events")
+}
+
+model TiktokEngagement {
+  id String @id @default(uuid())
+
+  // TOP engagement
+  watchTime         Int?    @map("watch_time")
+  percentageWatched Int?    @map("percentage_watched")
+  device            String?
+  country           String?
+  videoId           String? @map("video_id")
+
+  // BOTTOM engagement
+  actionTime     DateTime? @map("action_time")
+  profileId      String?   @map("profile_id")
+  purchasedItem  String?   @map("purchased_item")
+  purchaseAmount String?   @map("purchase_amount")
+
+  eventId String      @unique @map("event_id")
+  event   TiktokEvent @relation(fields: [eventId], references: [id])
+
+  @@map("tiktok_engagements")
 }
