@@ -1,16 +1,20 @@
 import {
   EventsAggregationFilters,
   EventsRevenueFilters,
+  FACEBOOK_EVENT_TYPE,
   FacebookEvent,
 } from '@app/common';
 import { FacebookRepository } from './interfaces';
 import { PrismaService } from '@app/common/prisma';
 import { Injectable } from '@nestjs/common';
-import { FacebookEventType } from '@prisma/client';
-import { mapEventToPrismaType } from '@app/common/utils';
+import {
+  convertToPrismaEventType,
+  mapEventToPrismaType,
+} from '@app/common/utils';
 import {
   Source as PrismaSource,
   FunnelStage as PrismaFunnelStage,
+  FacebookEventType,
 } from '@prisma/client';
 
 @Injectable()
@@ -51,7 +55,9 @@ export class FacebookRepositoryImpl implements FacebookRepository {
           (filters.funnelStage?.toUpperCase() as PrismaFunnelStage) ??
           undefined,
         eventType:
-          (filters.eventType?.toUpperCase() as FacebookEventType) ?? undefined,
+          filters.eventType && FACEBOOK_EVENT_TYPE.includes(filters.eventType as any)
+            ? convertToPrismaEventType<FacebookEventType>(filters.eventType)
+            : undefined,
       },
       _count: true,
     });
