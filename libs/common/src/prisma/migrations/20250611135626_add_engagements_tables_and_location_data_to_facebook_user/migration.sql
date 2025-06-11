@@ -29,9 +29,7 @@ ADD COLUMN     "funnel_stage" "FunnelStage" NOT NULL,
 ADD COLUMN     "user_id" TEXT NOT NULL;
 
 -- AlterTable
-ALTER TABLE "facebook_users" DROP COLUMN "location",
-ADD COLUMN     "city" TEXT,
-ADD COLUMN     "country" TEXT;
+ALTER TABLE "facebook_users" DROP COLUMN "location";
 
 -- DropTable
 DROP TABLE "TiktokEvent";
@@ -50,7 +48,7 @@ CREATE TABLE "facebook_engagements" (
     "click_position" TEXT,
     "device" TEXT,
     "browser" TEXT,
-    "purchase_amount" TEXT,
+    "purchase_amount" DOUBLE PRECISION,
     "event_id" TEXT NOT NULL,
 
     CONSTRAINT "facebook_engagements_pkey" PRIMARY KEY ("id")
@@ -98,7 +96,7 @@ CREATE TABLE "tiktok_engagements" (
     "action_time" TIMESTAMP(3),
     "profile_id" TEXT,
     "purchased_item" TEXT,
-    "purchase_amount" TEXT,
+    "purchase_amount" DOUBLE PRECISION,
     "event_id" TEXT NOT NULL,
 
     CONSTRAINT "tiktok_engagements_pkey" PRIMARY KEY ("id")
