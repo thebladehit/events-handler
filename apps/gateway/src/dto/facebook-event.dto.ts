@@ -6,7 +6,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Gender, GENDER } from '@app/common';
+import { Gender, GENDER } from '@app/common/types';
 
 export class FacebookUserLocationDto {
   @IsString()

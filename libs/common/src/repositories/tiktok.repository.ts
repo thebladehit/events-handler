@@ -1,11 +1,5 @@
 import { TiktokRepository } from './interfaces';
 import { Injectable } from '@nestjs/common';
-import {
-  EventsCountFilters,
-  EventsRevenueFilters,
-  TIKTOK_EVENT_TYPE,
-  TiktokEvent,
-} from '@app/common';
 import { PrismaService } from '@app/common/prisma';
 import {
   FunnelStage as PrismaFunnelStage,
@@ -15,7 +9,13 @@ import {
   convertToPrismaEventType,
   mapEventToPrismaType,
 } from '@app/common/utils';
-import { EventsDemographicsFilters } from '@app/common/types';
+import {
+  EventsCountFilters,
+  EventsDemographicsFilters,
+  EventsRevenueFilters,
+  TIKTOK_EVENT_TYPE,
+  TiktokEvent,
+} from '@app/common/types';
 
 @Injectable()
 export class TiktokRepositoryImpl implements TiktokRepository {

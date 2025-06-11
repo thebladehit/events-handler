@@ -1,4 +1,4 @@
-import { EventType, FunnelStage, Source } from '@app/common';
+import { EventType, FunnelStage, Source } from '@app/common/types';
 
 export interface EventsCountFilters {
   from?: number;

@@ -1,10 +1,4 @@
 import {
-  FACEBOOK_EVENT_TYPE,
-  Source, TIKTOK_EVENT_TYPE,
-  TRANSACTIONAL_EVENT_TYPE,
-  TransactionalEventType,
-} from '@app/common';
-import {
   IsDefined,
   IsEnum,
   IsIn,
@@ -16,6 +10,13 @@ import {
   ValidateIf,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import {
+  FACEBOOK_EVENT_TYPE,
+  Source,
+  TIKTOK_EVENT_TYPE,
+  TRANSACTIONAL_EVENT_TYPE,
+  TransactionalEventType,
+} from '@app/common/types';
 
 export class EventRevenueDto {
   @Type(() => Number)

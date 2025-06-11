@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { EventsReportDto } from './dto/events-report.dto';
 import { FacebookRepository, TiktokRepository } from '@app/common/repositories';
-import { Source } from '@app/common';
 import { EventRevenueDto } from './dto/event-revenue.dto';
 import { EventsDemographics } from './dto/events-demographics';
+import { Source } from '@app/common/types';
 
 @Injectable()
 export class ReporterService {

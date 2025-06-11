@@ -1,7 +1,6 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JetStreamReaderService } from '@app/common';
-import { JetStreamReaderServiceImpl } from '@app/common/jet-streams/read/jet-stream-readerImpl.service';
+import { JetStreamReaderService, JetStreamReaderServiceImpl } from '@app/common/jet-streams';
 
 @Module({})
 export class JetStreamReadModule {

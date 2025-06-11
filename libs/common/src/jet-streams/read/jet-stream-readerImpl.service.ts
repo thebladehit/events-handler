@@ -12,7 +12,8 @@ import {
   JsMsg,
 } from 'nats';
 import { ConfigService } from '@nestjs/config';
-import { Event, JetStreamReaderService, SubjectName } from '@app/common';
+import { JetStreamReaderService } from '../interfaces';
+import { Event, SubjectName } from '@app/common/types';
 
 @Injectable()
 export class JetStreamReaderServiceImpl implements JetStreamReaderService {

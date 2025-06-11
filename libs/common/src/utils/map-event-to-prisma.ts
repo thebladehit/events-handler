@@ -1,4 +1,4 @@
-import { Event } from '@app/common';
+import { Event } from '@app/common/types';
 import {
   FacebookEventType,
   FunnelStage,

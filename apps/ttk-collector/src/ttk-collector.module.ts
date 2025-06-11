@@ -2,13 +2,9 @@ import { Module } from '@nestjs/common';
 import { TtkCollectorService } from './ttk-collector.service';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
-import {
-  DurableName,
-  JetStreamReadModule,
-  STREAM_NAME,
-  SubjectName,
-} from '@app/common';
 import { RepositoriesModule } from '@app/common/repositories';
+import { JetStreamReadModule } from '@app/common/jet-streams';
+import { DurableName, STREAM_NAME, SubjectName } from '@app/common/types';
 
 @Module({
   imports: [
