@@ -41,10 +41,10 @@ export class FacebookRepositoryImpl implements FacebookRepository {
     ]);
   }
 
-  getAggregatedEvents(
+  async getAggregatedEvents(
     filters: EventsAggregationFilters
-  ): Promise<{ _count: number }> {
-    return this.prismaService.facebookEvent.aggregate({
+  ): Promise<{ count: number }> {
+    const count = await this.prismaService.facebookEvent.aggregate({
       where: {
         timestamp: {
           gte: filters.from ? new Date(filters.from) : undefined,
@@ -55,16 +55,46 @@ export class FacebookRepositoryImpl implements FacebookRepository {
           (filters.funnelStage?.toUpperCase() as PrismaFunnelStage) ??
           undefined,
         eventType:
-          filters.eventType && FACEBOOK_EVENT_TYPE.includes(filters.eventType as any)
+          filters.eventType &&
+          FACEBOOK_EVENT_TYPE.includes(filters.eventType as any)
             ? convertToPrismaEventType<FacebookEventType>(filters.eventType)
             : undefined,
       },
       _count: true,
     });
+    return { count: count._count };
   }
 
-  getAggregatedRevenue(filters: EventsRevenueFilters): Promise<any> {
-    return Promise.resolve(undefined);
+  async getAggregatedRevenue(
+    filters: EventsRevenueFilters
+  ): Promise<{ revenue: number }> {
+    const events = await this.prismaService.facebookEvent.findMany({
+      where: {
+        timestamp: {
+          gte: filters.from ? new Date(filters.from) : undefined,
+          lte: filters.to ? new Date(filters.to) : undefined,
+        },
+        source: (filters.source?.toUpperCase() as PrismaSource) ?? undefined,
+        eventType:
+          filters.eventType &&
+          FACEBOOK_EVENT_TYPE.includes(filters.eventType as any)
+            ? convertToPrismaEventType<FacebookEventType>(filters.eventType)
+            : undefined,
+      },
+      select: { id: true },
+    });
+    const ids = events.map((e) => e.id);
+    const revenue = await this.prismaService.facebookEngagement.aggregate({
+      where: {
+        eventId: { in: ids },
+        purchaseAmount: { not: null },
+        campaignId: filters.campaignId ?? undefined,
+      },
+      _sum: {
+        purchaseAmount: true,
+      },
+    });
+    return { revenue: revenue._sum.purchaseAmount };
   }
 
   private getUsersDataForCreation(events: FacebookEvent[]) {
@@ -94,7 +124,9 @@ export class FacebookRepositoryImpl implements FacebookRepository {
       clickPosition: event.data.engagement['clickPosition'] ?? null,
       device: event.data.engagement['device'] ?? null,
       browser: event.data.engagement['browser'] ?? null,
-      purchaseAmount: event.data.engagement['purchaseAmount'] ?? null,
+      purchaseAmount: event.data.engagement['purchaseAmount']
+        ? Number(event.data.engagement['purchaseAmount'])
+        : null,
       eventId: event.eventId,
     }));
   }

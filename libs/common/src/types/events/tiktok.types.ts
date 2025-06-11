@@ -3,6 +3,7 @@ import { FunnelStage, Source } from '@app/common';
 export const TIKTOK_TOP_EVENT_TYPE = ['video.view', 'like', 'share', 'comment'] as const;
 export const TIKTOK_BOTTOM_EVENT_TYPE = ['profile.visit', 'purchase', 'follow'] as const;
 export const TIKTOK_EVENT_TYPE = [...TIKTOK_BOTTOM_EVENT_TYPE, ...TIKTOK_TOP_EVENT_TYPE] as const;
+export const TIKTOK_TRANSACTIONAL_EVENT_TYPE = ['purchase'] as const;
 
 export type TiktokTopEventType = typeof TIKTOK_TOP_EVENT_TYPE[number];
 export type TiktokBottomEventType = typeof TIKTOK_BOTTOM_EVENT_TYPE[number] ;

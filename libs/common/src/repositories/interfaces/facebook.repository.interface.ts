@@ -4,6 +4,6 @@ import { EventsRevenueFilters } from '@app/common/types/filters/events-revenue-f
 
 export abstract class FacebookRepository {
   abstract saveMany(events: FacebookEvent[]): Promise<void>;
-  abstract getAggregatedEvents(filters: EventsAggregationFilters): Promise<{ _count: number }>;
-  abstract getAggregatedRevenue(filters: EventsRevenueFilters): Promise<any>;
+  abstract getAggregatedEvents(filters: EventsAggregationFilters): Promise<{ count: number }>;
+  abstract getAggregatedRevenue(filters: EventsRevenueFilters): Promise<{ revenue: number }>;
 }

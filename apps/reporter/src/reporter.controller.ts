@@ -1,6 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ReporterService } from './reporter.service';
 import { EventsReportDto } from './dto/events-report.dto';
+import { EventRevenueDto } from './dto/event-revenue.dto';
 
 @Controller('/reports')
 export class ReporterController {
@@ -11,5 +12,8 @@ export class ReporterController {
     return this.reporterService.getEventsCount(dto);
   }
 
-
+  @Get('/revenue')
+  getEventsRevenue(@Query() dto: EventRevenueDto) {
+    return this.reporterService.getEventsRevenue(dto);
+  }
 }
