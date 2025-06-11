@@ -9,7 +9,6 @@ import {
 import { PrismaService } from '@app/common/prisma';
 import {
   FunnelStage as PrismaFunnelStage,
-  Source as PrismaSource,
   TiktokEventType,
 } from '@prisma/client';
 import {
@@ -47,7 +46,6 @@ export class TiktokRepositoryImpl implements TiktokRepository {
           gte: filters.from ? new Date(filters.from) : undefined,
           lte: filters.to ? new Date(filters.to) : undefined,
         },
-        source: (filters.source?.toUpperCase() as PrismaSource) ?? undefined,
         funnelStage:
           (filters.funnelStage?.toUpperCase() as PrismaFunnelStage) ??
           undefined,

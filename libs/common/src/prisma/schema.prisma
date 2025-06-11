@@ -7,11 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Source {
-  FACEBOOK @map("facebook")
-  TIKTOK   @map("tiktok")
-}
-
 enum FunnelStage {
   TOP    @map("top")
   BOTTOM @map("bottom")
@@ -30,7 +25,6 @@ enum FacebookEventType {
 model FacebookEvent {
   id          String            @id
   timestamp   DateTime
-  source      Source
   funnelStage FunnelStage       @map("funnel_stage")
   eventType   FacebookEventType @map("event_type")
   userId      String            @map("user_id")
@@ -107,7 +101,6 @@ model TiktokUser {
 model TiktokEvent {
   id          String          @id
   timestamp   DateTime
-  source      Source
   funnelStage FunnelStage     @map("funnel_stage")
   eventType   TiktokEventType @map("event_type")
 

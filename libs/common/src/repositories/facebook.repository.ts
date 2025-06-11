@@ -12,7 +12,6 @@ import {
   mapEventToPrismaType,
 } from '@app/common/utils';
 import {
-  Source as PrismaSource,
   FunnelStage as PrismaFunnelStage,
   FacebookEventType,
 } from '@prisma/client';
@@ -51,7 +50,6 @@ export class FacebookRepositoryImpl implements FacebookRepository {
           gte: filters.from ? new Date(filters.from) : undefined,
           lte: filters.to ? new Date(filters.to) : undefined,
         },
-        source: (filters.source?.toUpperCase() as PrismaSource) ?? undefined,
         funnelStage:
           (filters.funnelStage?.toUpperCase() as PrismaFunnelStage) ??
           undefined,
