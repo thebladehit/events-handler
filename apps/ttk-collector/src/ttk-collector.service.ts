@@ -1,7 +1,8 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { JetStreamReaderService, TiktokEvent, wait } from '@app/common';
+import { JetStreamReaderService, TiktokEvent } from '@app/common';
 import { TiktokRepository } from '@app/common/repositories';
 import { ConfigService } from '@nestjs/config';
+import { wait } from '@app/common/utils';
 
 @Injectable()
 export class TtkCollectorService implements OnModuleInit, OnModuleDestroy {

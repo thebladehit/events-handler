@@ -1,7 +1,8 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { FacebookEvent, JetStreamReaderService, wait } from '@app/common';
+import { FacebookEvent, JetStreamReaderService } from '@app/common';
 import { FacebookRepository } from '@app/common/repositories';
 import { ConfigService } from '@nestjs/config';
+import { wait } from '@app/common/utils';
 
 @Injectable()
 export class FbCollectorService implements OnModuleInit, OnModuleDestroy {
