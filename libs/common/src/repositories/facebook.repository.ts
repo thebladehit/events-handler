@@ -1,5 +1,5 @@
 import {
-  EventsAggregationFilters,
+  EventsCountFilters,
   EventsRevenueFilters,
   FACEBOOK_EVENT_TYPE,
   FacebookEvent,
@@ -16,6 +16,7 @@ import {
   FunnelStage as PrismaFunnelStage,
   FacebookEventType,
 } from '@prisma/client';
+import { EventsDemographicsFilters } from '@app/common/types';
 
 @Injectable()
 export class FacebookRepositoryImpl implements FacebookRepository {
@@ -42,7 +43,7 @@ export class FacebookRepositoryImpl implements FacebookRepository {
   }
 
   async getAggregatedEvents(
-    filters: EventsAggregationFilters
+    filters: EventsCountFilters
   ): Promise<{ count: number }> {
     const count = await this.prismaService.facebookEvent.aggregate({
       where: {
@@ -95,6 +96,34 @@ export class FacebookRepositoryImpl implements FacebookRepository {
       },
     });
     return { revenue: revenue._sum.purchaseAmount };
+  }
+
+  async getAggregatedDemographics(
+    filters: EventsDemographicsFilters
+  ): Promise<{ userCount: number }> {
+    const userCount = await this.prismaService.facebookUser.aggregate({
+      where: {
+        age: filters.age ?? undefined,
+        gender: filters.gender ?? undefined,
+        location: {
+          country: filters.country ?? undefined,
+          city: filters.city ?? undefined,
+        },
+        events: {
+          some: {
+            timestamp: {
+              gte: filters.from ? new Date(filters.from) : undefined,
+              lte: filters.to ? new Date(filters.to) : undefined,
+            },
+            engagement: {
+              device: filters.device ?? undefined,
+            }
+          }
+        }
+      },
+      _count: true
+    });
+    return { userCount: userCount._count };
   }
 
   private getUsersDataForCreation(events: FacebookEvent[]) {

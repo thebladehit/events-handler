@@ -3,6 +3,7 @@ import { EventsReportDto } from './dto/events-report.dto';
 import { FacebookRepository, TiktokRepository } from '@app/common/repositories';
 import { Source } from '@app/common';
 import { EventRevenueDto } from './dto/event-revenue.dto';
+import { EventsDemographics } from './dto/events-demographics';
 
 @Injectable()
 export class ReporterService {
@@ -27,5 +28,13 @@ export class ReporterService {
     return dto.source === Source.TIKTOK
       ? await this.tkReporterService.getAggregatedRevenue(dto)
       : await this.fbRepository.getAggregatedRevenue(dto);
+  }
+
+  async getEventsDemographics(
+    dto: EventsDemographics
+  ): Promise<{ userCount: number }> {
+    return dto.source === Source.TIKTOK
+      ? this.tkReporterService.getAggregatedDemographics(dto)
+      : this.fbRepository.getAggregatedDemographics(dto);
   }
 }
