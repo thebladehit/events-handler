@@ -2,7 +2,9 @@ import { FunnelStage, Source } from '@app/common';
 
 export const GENDER = ['male', 'female', 'non-binary'] as const;
 export const FACEBOOK_TOP_EVENT_TYPE = ['ad.view', 'page.like', 'comment', 'video.view'] as const;
-export const FACEBOOK_BOTTOM_EVENT_TYPE = [ 'ad.click', 'form.submission', 'checkout.complete'] as const;
+export const FACEBOOK_BOTTOM_EVENT_TYPE = ['ad.click', 'form.submission', 'checkout.complete'] as const;
+export const FACEBOOK_EVENT_TYPE = [...FACEBOOK_BOTTOM_EVENT_TYPE, ...FACEBOOK_TOP_EVENT_TYPE] as const;
+export const FACEBOOK_TRANSACTIONAL_EVENT_TYPE = ['checkout.complete'] as const;
 
 export type Gender = typeof GENDER[number];
 
