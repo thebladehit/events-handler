@@ -1,9 +1,3 @@
-import {
-  EventsCountFilters,
-  EventsRevenueFilters,
-  FACEBOOK_EVENT_TYPE,
-  FacebookEvent,
-} from '@app/common';
 import { FacebookRepository } from './interfaces';
 import { PrismaService } from '@app/common/prisma';
 import { Injectable } from '@nestjs/common';
@@ -15,7 +9,13 @@ import {
   FunnelStage as PrismaFunnelStage,
   FacebookEventType,
 } from '@prisma/client';
-import { EventsDemographicsFilters } from '@app/common/types';
+import {
+  EventsCountFilters,
+  EventsDemographicsFilters,
+  EventsRevenueFilters,
+  FACEBOOK_EVENT_TYPE,
+  FacebookEvent,
+} from '@app/common/types';
 
 @Injectable()
 export class FacebookRepositoryImpl implements FacebookRepository {

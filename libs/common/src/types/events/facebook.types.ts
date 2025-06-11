@@ -1,4 +1,4 @@
-import { FunnelStage, Source } from '@app/common';
+import { FunnelStage, Source } from '@app/common/types';
 
 export const GENDER = ['male', 'female', 'non-binary'] as const;
 export const FACEBOOK_TOP_EVENT_TYPE = ['ad.view', 'page.like', 'comment', 'video.view'] as const;

@@ -1,4 +1,4 @@
-import { FunnelStage, Source } from '@app/common';
+import { FunnelStage, Source } from '@app/common/types';
 
 export const TIKTOK_TOP_EVENT_TYPE = ['video.view', 'like', 'share', 'comment'] as const;
 export const TIKTOK_BOTTOM_EVENT_TYPE = ['profile.visit', 'purchase', 'follow'] as const;

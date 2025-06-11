@@ -1,11 +1,4 @@
 import {
-  EVENT_TYPE,
-  EventType, FACEBOOK_EVENT_TYPE,
-  FUNNEL_STAGE,
-  FunnelStage,
-  Source, TIKTOK_EVENT_TYPE,
-} from '@app/common';
-import {
   IsDefined,
   IsEnum,
   IsIn,
@@ -15,6 +8,15 @@ import {
   ValidateIf,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import {
+  EVENT_TYPE,
+  EventType,
+  FACEBOOK_EVENT_TYPE,
+  FUNNEL_STAGE,
+  FunnelStage,
+  Source,
+  TIKTOK_EVENT_TYPE,
+} from '@app/common/types';
 
 export class EventsReportDto {
   @IsOptional()

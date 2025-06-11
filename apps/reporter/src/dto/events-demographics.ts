@@ -8,7 +8,7 @@ import {
   IsString,
   Min,
 } from 'class-validator';
-import { GENDER, Gender, Source } from '@app/common';
+import { Gender, GENDER, Source } from '@app/common/types';
 
 export class EventsDemographics {
   @Type(() => Number)

@@ -1,4 +1,4 @@
-import { Gender, Source } from '@app/common';
+import { Gender, Source } from '@app/common/types';
 
 export interface EventsDemographicsFilters {
   from: number;

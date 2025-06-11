@@ -15,7 +15,8 @@ import {
   FUNNEL_STAGE,
   FunnelStage,
   Source,
-} from '@app/common';
+} from '@app/common/types';
+
 
 export class EventDto {
   @IsString()

@@ -3,7 +3,8 @@ import { GatewayController } from './gateway.controller';
 import { GatewayService } from './gateway.service';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
-import { JetStreamWriterModule, STREAM_NAME, SubjectName } from '@app/common';
+import { JetStreamWriterModule } from '@app/common/jet-streams';
+import { STREAM_NAME } from '@app/common/types';
 
 @Module({
   imports: [

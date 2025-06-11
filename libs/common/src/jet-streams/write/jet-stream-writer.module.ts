@@ -1,9 +1,6 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import {
-  JetStreamWriterService,
-  JetStreamWriterServiceImpl,
-} from '@app/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JetStreamWriterService, JetStreamWriterServiceImpl } from '@app/common/jet-streams';
 
 @Module({})
 export class JetStreamWriterModule {

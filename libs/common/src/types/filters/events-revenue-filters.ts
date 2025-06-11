@@ -1,4 +1,4 @@
-import { Source, TransactionalEventType } from '@app/common';
+import { Source, TransactionalEventType } from '@app/common/types';
 
 export interface EventsRevenueFilters {
   eventType: TransactionalEventType;
