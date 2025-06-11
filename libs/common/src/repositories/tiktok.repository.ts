@@ -65,26 +65,20 @@ export class TiktokRepositoryImpl implements TiktokRepository {
   async getAggregatedRevenue(
     filters: EventsRevenueFilters
   ): Promise<{ revenue: number }> {
-    const events = await this.prismaService.tiktokEvent.findMany({
-      where: {
-        timestamp: {
-          gte: filters.from ? new Date(filters.from) : undefined,
-          lte: filters.to ? new Date(filters.to) : undefined,
-        },
-        source: (filters.source?.toUpperCase() as PrismaSource) ?? undefined,
-        eventType:
-          filters.eventType &&
-          TIKTOK_EVENT_TYPE.includes(filters.eventType as any)
-            ? convertToPrismaEventType<TiktokEventType>(filters.eventType)
-            : undefined,
-      },
-      select: { id: true },
-    });
-    const ids = events.map((e) => e.id);
     const revenue = await this.prismaService.tiktokEngagement.aggregate({
       where: {
-        eventId: { in: ids },
         purchaseAmount: { not: null },
+        event: {
+          timestamp: {
+            gte: filters.from ? new Date(filters.from) : undefined,
+            lte: filters.to ? new Date(filters.to) : undefined,
+          },
+          eventType:
+            filters.eventType &&
+            TIKTOK_EVENT_TYPE.includes(filters.eventType as any)
+              ? convertToPrismaEventType<TiktokEventType>(filters.eventType)
+              : undefined,
+        },
       },
       _sum: {
         purchaseAmount: true,

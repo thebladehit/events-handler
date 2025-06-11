@@ -69,27 +69,21 @@ export class FacebookRepositoryImpl implements FacebookRepository {
   async getAggregatedRevenue(
     filters: EventsRevenueFilters
   ): Promise<{ revenue: number }> {
-    const events = await this.prismaService.facebookEvent.findMany({
-      where: {
-        timestamp: {
-          gte: filters.from ? new Date(filters.from) : undefined,
-          lte: filters.to ? new Date(filters.to) : undefined,
-        },
-        source: (filters.source?.toUpperCase() as PrismaSource) ?? undefined,
-        eventType:
-          filters.eventType &&
-          FACEBOOK_EVENT_TYPE.includes(filters.eventType as any)
-            ? convertToPrismaEventType<FacebookEventType>(filters.eventType)
-            : undefined,
-      },
-      select: { id: true },
-    });
-    const ids = events.map((e) => e.id);
     const revenue = await this.prismaService.facebookEngagement.aggregate({
       where: {
-        eventId: { in: ids },
         purchaseAmount: { not: null },
         campaignId: filters.campaignId ?? undefined,
+        event: {
+          timestamp: {
+            gte: filters.from ? new Date(filters.from) : undefined,
+            lte: filters.to ? new Date(filters.to) : undefined,
+          },
+          eventType:
+            filters.eventType &&
+            FACEBOOK_EVENT_TYPE.includes(filters.eventType as any)
+              ? convertToPrismaEventType<FacebookEventType>(filters.eventType)
+              : undefined,
+        },
       },
       _sum: {
         purchaseAmount: true,
@@ -117,11 +111,11 @@ export class FacebookRepositoryImpl implements FacebookRepository {
             },
             engagement: {
               device: filters.device ?? undefined,
-            }
-          }
-        }
+            },
+          },
+        },
       },
-      _count: true
+      _count: true,
     });
     return { userCount: userCount._count };
   }
