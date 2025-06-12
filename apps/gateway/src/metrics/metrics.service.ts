@@ -4,7 +4,7 @@ import {
   ACCEPTED_EVENTS,
   FAILED_EVENTS,
   PROCESSED_EVENTS,
-} from './constance/metrix-name';
+} from './constance/metrics-name';
 import { Counter } from 'prom-client';
 import { OnEvent } from '@nestjs/event-emitter';
 import { EventProcessing } from '../constance/events-constance';

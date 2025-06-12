@@ -15,7 +15,7 @@ import {
   ACCEPTED_EVENTS,
   FAILED_EVENTS,
   PROCESSED_EVENTS,
-} from './metrics/constance/metrix-name';
+} from './metrics/constance/metrics-name';
 
 @Module({
   imports: [
