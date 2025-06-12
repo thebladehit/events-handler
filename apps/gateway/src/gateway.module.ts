@@ -3,8 +3,8 @@ import { GatewayController } from './gateway.controller';
 import { GatewayService } from './gateway.service';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
-import { JetStreamWriterModule } from '@app/common/jet-streams';
 import { STREAM_NAME } from '@app/common/types';
+import { JetStreamWriterModule } from '@app/common/jet-streams/write';
 import {
   makeCounterProvider,
   PrometheusModule,
@@ -16,6 +16,9 @@ import {
   FAILED_EVENTS,
   PROCESSED_EVENTS,
 } from './metrics/constance/metrics-name';
+import { SharedProbeModule } from '@app/common/probe';
+import { ReadinessController } from './readiness.controller';
+import { TerminusModule } from '@nestjs/terminus';
 
 @Module({
   imports: [
@@ -35,8 +38,10 @@ import {
       },
     }),
     EventEmitterModule.forRoot(),
+    SharedProbeModule.forRoot({ useJetSteams: true }),
+    TerminusModule,
   ],
-  controllers: [GatewayController],
+  controllers: [GatewayController, ReadinessController],
   providers: [
     GatewayService,
     MetricsService,
