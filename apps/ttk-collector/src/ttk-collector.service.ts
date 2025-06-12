@@ -3,7 +3,9 @@ import { TiktokRepository } from '@app/common/repositories';
 import { ConfigService } from '@nestjs/config';
 import { wait } from '@app/common/utils';
 import { JetStreamReaderService } from '@app/common/jet-streams';
-import { TiktokEvent } from '@app/common/types';
+import { Event, TiktokEvent } from '@app/common/types';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EventProcessing } from './constance/events-constance';
 
 @Injectable()
 export class TtkCollectorService implements OnModuleInit, OnModuleDestroy {
@@ -14,7 +16,8 @@ export class TtkCollectorService implements OnModuleInit, OnModuleDestroy {
   constructor(
     private readonly jetStreamReaderService: JetStreamReaderService,
     private readonly ttkRepository: TiktokRepository,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly eventEmitter: EventEmitter2
   ) {
     this.batchSize = this.configService.get('BATCH_SIZE');
   }
@@ -35,19 +38,33 @@ export class TtkCollectorService implements OnModuleInit, OnModuleDestroy {
     while (this.isRunning) {
       this.inProgressCount++;
       try {
-        const events = await this.jetStreamReaderService.pull(this.batchSize);
-        if (events.length === 0) {
-          await wait(1);
-          continue;
-        }
-        await this.ttkRepository.saveMany(events as TiktokEvent[]);
+        const events = await this.getEvents();
+        this.eventEmitter.emit(EventProcessing.ACCEPTED_EVENTS, events.length);
+        await this.ttkRepository
+          .saveMany(events as TiktokEvent[])
+          .catch((err) => {
+            this.eventEmitter.emit(EventProcessing.FAILED_EVENTS, events.length);
+            throw err;
+          });
         this.jetStreamReaderService.acknowledgeEvents();
+        this.eventEmitter.emit(EventProcessing.PROCESSED_EVENTS, events.length);
       } catch (err) {
         // TODO add logger
         console.error(err);
       } finally {
         this.inProgressCount--;
       }
+    }
+  }
+
+  private async getEvents(): Promise<Event[]> {
+    while (true) {
+      const events = await this.jetStreamReaderService.pull(this.batchSize);
+      if (events.length === 0) {
+        await wait(1);
+        continue;
+      }
+      return events;
     }
   }
 }
