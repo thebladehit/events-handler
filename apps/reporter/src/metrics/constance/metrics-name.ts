@@ -1,0 +1,1 @@
+export const EXECUTION_LATENCY = 'execution_latency';

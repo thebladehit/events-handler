@@ -4,6 +4,12 @@ import { ReporterService } from './reporter.service';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { RepositoriesModule } from '@app/common/repositories';
+import {
+  makeHistogramProvider,
+  PrometheusModule,
+} from '@willsoto/nestjs-prometheus';
+import { EXECUTION_LATENCY } from './metrics/constance/metrics-name';
+import { MetricsService } from './metrics/metrics.service';
 
 @Module({
   imports: [
@@ -15,8 +21,22 @@ import { RepositoriesModule } from '@app/common/repositories';
       }),
     }),
     RepositoriesModule,
+    PrometheusModule.register({
+      defaultMetrics: {
+        enabled: false,
+      },
+    }),
   ],
   controllers: [ReporterController],
-  providers: [ReporterService],
+  providers: [
+    ReporterService,
+    MetricsService,
+    makeHistogramProvider({
+      name: EXECUTION_LATENCY,
+      help: 'Execution time of a reporter service',
+      labelNames: ['category'],
+      buckets: [0.01, 0.05, 0.1, 0.25, 0.5, 1, 2.5],
+    }),
+  ],
 })
 export class ReporterModule {}

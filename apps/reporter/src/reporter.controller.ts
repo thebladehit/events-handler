@@ -1,10 +1,12 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseInterceptors } from '@nestjs/common';
 import { ReporterService } from './reporter.service';
 import { EventsReportDto } from './dto/events-report.dto';
 import { EventRevenueDto } from './dto/event-revenue.dto';
 import { EventsDemographics } from './dto/events-demographics';
+import { LatencyInterceptor } from './interceptors/latency.interceptor';
 
 @Controller('/reports')
+@UseInterceptors(LatencyInterceptor)
 export class ReporterController {
   constructor(private readonly reporterService: ReporterService) {}
 
