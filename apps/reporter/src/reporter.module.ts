@@ -10,6 +10,9 @@ import {
 } from '@willsoto/nestjs-prometheus';
 import { EXECUTION_LATENCY } from './metrics/constance/metrics-name';
 import { MetricsService } from './metrics/metrics.service';
+import { SharedProbeModule } from '@app/common/probe';
+import { TerminusModule } from '@nestjs/terminus';
+import { ReadinessController } from './readiness.controller';
 
 @Module({
   imports: [
@@ -26,8 +29,10 @@ import { MetricsService } from './metrics/metrics.service';
         enabled: false,
       },
     }),
+    SharedProbeModule.forRoot({ usePrisma: true }),
+    TerminusModule,
   ],
-  controllers: [ReporterController],
+  controllers: [ReporterController, ReadinessController],
   providers: [
     ReporterService,
     MetricsService,

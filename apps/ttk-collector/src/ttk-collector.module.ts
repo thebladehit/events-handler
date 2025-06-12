@@ -3,7 +3,6 @@ import { TtkCollectorService } from './ttk-collector.service';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { RepositoriesModule } from '@app/common/repositories';
-import { JetStreamReadModule } from '@app/common/jet-streams';
 import { DurableName, STREAM_NAME, SubjectName } from '@app/common/types';
 import {
   makeCounterProvider,
@@ -16,6 +15,10 @@ import {
   FAILED_EVENTS,
   PROCESSED_EVENTS,
 } from './metrics/constance/metrics-constance';
+import { ReadinessController } from './readiness.controller';
+import { SharedProbeModule } from '@app/common/probe';
+import { TerminusModule } from '@nestjs/terminus';
+import { JetStreamReadModule } from '@app/common/jet-streams/read';
 
 @Module({
   imports: [
@@ -39,7 +42,10 @@ import {
       },
     }),
     EventEmitterModule.forRoot(),
+    SharedProbeModule.forRoot({ useJetSteams: true, usePrisma: true }),
+    TerminusModule,
   ],
+  controllers: [ReadinessController],
   providers: [
     TtkCollectorService,
     MetricsService,
