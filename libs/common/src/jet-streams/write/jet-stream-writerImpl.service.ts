@@ -9,6 +9,7 @@ import {
 } from 'nats';
 import { JetStreamWriterService } from '@app/common/jet-streams';
 import { Event, SubjectName } from '@app/common/types';
+import { Logger } from 'nestjs-pino';
 
 @Injectable()
 export class JetStreamWriterServiceImpl implements JetStreamWriterService {
@@ -16,7 +17,10 @@ export class JetStreamWriterServiceImpl implements JetStreamWriterService {
   private jsm: JetStreamManager;
   private codec = JSONCodec();
 
-  constructor(private readonly nats: NatsConnection) {}
+  constructor(
+    private readonly nats: NatsConnection,
+    private readonly logger: Logger
+  ) {}
 
   async setup(): Promise<void> {
     this.js = this.nats.jetstream();
@@ -35,8 +39,7 @@ export class JetStreamWriterServiceImpl implements JetStreamWriterService {
           retention: RetentionPolicy.Limits,
         });
       } else {
-        // TODO add logger
-        console.error(err);
+        this.logger.error(err);
       }
     }
   }
