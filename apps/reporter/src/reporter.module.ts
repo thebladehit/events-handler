@@ -13,6 +13,7 @@ import { MetricsService } from './metrics/metrics.service';
 import { SharedProbeModule } from '@app/common/probe';
 import { TerminusModule } from '@nestjs/terminus';
 import { ReadinessController } from './readiness.controller';
+import { LoggerModule } from '@app/common/logger';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ReadinessController } from './readiness.controller';
     }),
     SharedProbeModule.forRoot({ usePrisma: true }),
     TerminusModule,
+    LoggerModule,
   ],
   controllers: [ReporterController, ReadinessController],
   providers: [

@@ -19,6 +19,7 @@ import {
 import { SharedProbeModule } from '@app/common/probe';
 import { ReadinessController } from './readiness.controller';
 import { TerminusModule } from '@nestjs/terminus';
+import { LoggerModule } from '@app/common/logger';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { TerminusModule } from '@nestjs/terminus';
     EventEmitterModule.forRoot(),
     SharedProbeModule.forRoot({ useJetSteams: true }),
     TerminusModule,
+    LoggerModule,
   ],
   controllers: [GatewayController, ReadinessController],
   providers: [
