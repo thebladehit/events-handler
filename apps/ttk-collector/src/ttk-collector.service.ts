@@ -6,6 +6,7 @@ import { JetStreamReaderService } from '@app/common/jet-streams';
 import { Event, TiktokEvent } from '@app/common/types';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EventProcessing } from './constance/events-constance';
+import { Logger } from 'nestjs-pino';
 
 @Injectable()
 export class TtkCollectorService implements OnModuleInit, OnModuleDestroy {
@@ -17,7 +18,8 @@ export class TtkCollectorService implements OnModuleInit, OnModuleDestroy {
     private readonly jetStreamReaderService: JetStreamReaderService,
     private readonly ttkRepository: TiktokRepository,
     private readonly configService: ConfigService,
-    private readonly eventEmitter: EventEmitter2
+    private readonly eventEmitter: EventEmitter2,
+    private readonly logger: Logger
   ) {
     this.batchSize = this.configService.get('BATCH_SIZE');
   }
@@ -48,9 +50,9 @@ export class TtkCollectorService implements OnModuleInit, OnModuleDestroy {
           });
         this.jetStreamReaderService.acknowledgeEvents();
         this.eventEmitter.emit(EventProcessing.PROCESSED_EVENTS, events.length);
+        this.logger.log(`Saved ${events.length} events`);
       } catch (err) {
-        // TODO add logger
-        console.error(err);
+        this.logger.error(err);
       } finally {
         this.inProgressCount--;
       }

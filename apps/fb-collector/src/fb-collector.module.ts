@@ -19,6 +19,7 @@ import { ReadinessController } from './readiness.controller';
 import { SharedProbeModule } from '@app/common/probe';
 import { TerminusModule } from '@nestjs/terminus';
 import { JetStreamReadModule } from '@app/common/jet-streams/read';
+import { LoggerModule } from '@app/common/logger';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { JetStreamReadModule } from '@app/common/jet-streams/read';
     EventEmitterModule.forRoot(),
     SharedProbeModule.forRoot({ useJetSteams: true, usePrisma: true }),
     TerminusModule,
+    LoggerModule,
   ],
   controllers: [ReadinessController],
   providers: [
