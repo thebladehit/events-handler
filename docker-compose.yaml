@@ -1,92 +1,92 @@
 version: '3.9'
 
 services:
-#  publisher:
-#    image: andriiuni/events:latest
-#    restart: always
-#    env_file:
-#      - .env.publisher
-#    depends_on:
-#      - gateway
-#
-#  gateway:
-#    build:
-#      context: .
-#      dockerfile: ./apps/gateway/Dockerfile
-#      target: development
-#    env_file:
-#      - ./apps/gateway/.env
-#    command: npm run start:gateway:dev
-#    ports:
-#      - '3001:3001'
-#    depends_on:
-#      - nats
+  publisher:
+    image: andriiuni/events:latest
+    restart: always
+    env_file:
+      - .env.publisher
+    depends_on:
+      - gateway
 
-#  fb-collector:
-#    build:
-#      context: .
-#      dockerfile: ./apps/fb-collector/Dockerfile
-#      target: development
-#    env_file:
-#      - ./apps/fb-collector/.env
-#    command: sh -c "npx prisma migrate deploy --schema=libs/common/src/prisma/ && npm run start:fb-collector:dev"
-#    ports:
-#      - '3002:3002'
-#    depends_on:
-#      - nats
-#      - postgres
-#
-#  ttk-collector:
-#    build:
-#      context: .
-#      dockerfile: ./apps/ttk-collector/Dockerfile
-#      target: development
-#    env_file:
-#      - ./apps/ttk-collector/.env
-#    command: sh -c "npx prisma migrate deploy --schema=libs/common/src/prisma/ && npm run start:ttk-collector:dev"
-#    ports:
-#      - '3003:3003'
-#    depends_on:
-#      - nats
-#      - postgres
-#
-#  reporter:
-#    build:
-#      context: .
-#      dockerfile: ./apps/reporter/Dockerfile
-#      target: development
-#    env_file:
-#      - ./apps/reporter/.env
-#    command: sh -c "npx prisma migrate deploy --schema=libs/common/src/prisma/ && npm run start:reporter:dev"
-#    ports:
-#      - '3004:3004'
-#    depends_on:
-#      - postgres
+  gateway:
+    build:
+      context: .
+      dockerfile: ./apps/gateway/Dockerfile
+      target: development
+    env_file:
+      - ./apps/gateway/.env
+    command: npm run start:gateway:dev
+    ports:
+      - '3001:3001'
+    depends_on:
+      - nats
 
-#  nats:
-#    image: nats:latest
-#    ports:
-#      - "4222:4222"
-#      - "8222:8222"
-#    volumes:
-#      - nats-data:/data
-#    command: >
-#      -js
-#      -sd /data
-#      -m 8222
+  fb-collector:
+    build:
+      context: .
+      dockerfile: ./apps/fb-collector/Dockerfile
+      target: development
+    env_file:
+      - ./apps/fb-collector/.env
+    command: sh -c "npx prisma migrate deploy --schema=libs/common/src/prisma/ && npm run start:fb-collector:dev"
+    ports:
+      - '3002:3002'
+    depends_on:
+      - nats
+      - postgres
 
-#  postgres:
-#    image: postgres
-#    environment:
-#      POSTGRES_USER: postgres
-#      POSTGRES_PASSWORD: 1111
-#      POSTGRES_DB: events
-#    ports:
-#      - "5432:5432"
-#    volumes:
-#      - postgres_data:/var/lib/postgresql/data
-#    restart: always
-#
+  ttk-collector:
+    build:
+      context: .
+      dockerfile: ./apps/ttk-collector/Dockerfile
+      target: development
+    env_file:
+      - ./apps/ttk-collector/.env
+    command: sh -c "npx prisma migrate deploy --schema=libs/common/src/prisma/ && npm run start:ttk-collector:dev"
+    ports:
+      - '3003:3003'
+    depends_on:
+      - nats
+      - postgres
+
+  reporter:
+    build:
+      context: .
+      dockerfile: ./apps/reporter/Dockerfile
+      target: development
+    env_file:
+      - ./apps/reporter/.env
+    command: sh -c "npx prisma migrate deploy --schema=libs/common/src/prisma/ && npm run start:reporter:dev"
+    ports:
+      - '3004:3004'
+    depends_on:
+      - postgres
+
+  nats:
+    image: nats:latest
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    volumes:
+      - nats-data:/data
+    command: >
+      -js
+      -sd /data
+      -m 8222
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1111
+      POSTGRES_DB: events
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
   prometheus:
     image: prom/prometheus
     volumes:
@@ -94,6 +94,16 @@ services:
       - prometheus_data:/prometheus
     ports:
       - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./grafana:/etc/grafana/provisioning
+    restart: unless-stopped
+    depends_on:
+      - prometheus
 
 volumes:
   nats-data:
