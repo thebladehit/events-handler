@@ -4,27 +4,22 @@ import {
   JetStreamManager,
   JSONCodec,
   NatsConnection,
-  connect,
   StorageType,
   RetentionPolicy,
 } from 'nats';
-import { ConfigService } from '@nestjs/config';
 import { JetStreamWriterService } from '@app/common/jet-streams';
 import { Event, SubjectName } from '@app/common/types';
 
 @Injectable()
 export class JetStreamWriterServiceImpl implements JetStreamWriterService {
-  private nc: NatsConnection;
   private js: JetStreamClient;
   private jsm: JetStreamManager;
   private codec = JSONCodec();
 
-  constructor(private configService: ConfigService) {}
+  constructor(private readonly nats: NatsConnection) {}
 
-  async connect(): Promise<void> {
-    const server_url = this.configService.get<string>('NATS_URL');
-    this.nc = await connect({ servers: [server_url] });
-    this.js = this.nc.jetstream();
+  async setup(): Promise<void> {
+    this.js = this.nats.jetstream();
     this.jsm = await this.js.jetstreamManager();
   }
 

@@ -1,6 +1,8 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JetStreamReaderService, JetStreamReaderServiceImpl } from '@app/common/jet-streams';
+import { JetStreamReaderService } from '@app/common/jet-streams';
+import { JetStreamReaderServiceImpl } from '@app/common/jet-streams/read/jet-stream-readerImpl.service';
+import { NATS_CONNECTION, NatsModule } from '@app/common/jet-streams/nats';
+import { NatsConnection } from 'nats';
 
 @Module({})
 export class JetStreamReadModule {
@@ -11,18 +13,18 @@ export class JetStreamReadModule {
   }): DynamicModule {
     return {
       module: JetStreamReadModule,
-      imports: [ConfigModule],
+      imports: [NatsModule],
       providers: [
         {
           provide: JetStreamReaderService,
-          useFactory: async (configService: ConfigService) => {
-            const service = new JetStreamReaderServiceImpl(configService);
-            await service.connect();
+          useFactory: async (nats: NatsConnection) => {
+            const service = new JetStreamReaderServiceImpl(nats);
+            await service.setup();
             await service.createStream(options.streamName);
             await service.setupConsumer(options.streamName, options.durableName, options.subject);
             return service;
           },
-          inject: [ConfigService],
+          inject: [NATS_CONNECTION],
         },
       ],
       exports: [JetStreamReaderService],
