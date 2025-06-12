@@ -5,6 +5,17 @@ import * as Joi from 'joi';
 import { RepositoriesModule } from '@app/common/repositories';
 import { JetStreamReadModule } from '@app/common/jet-streams';
 import { DurableName, STREAM_NAME, SubjectName } from '@app/common/types';
+import {
+  makeCounterProvider,
+  PrometheusModule,
+} from '@willsoto/nestjs-prometheus';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import {
+  ACCEPTED_EVENTS,
+  FAILED_EVENTS,
+  PROCESSED_EVENTS,
+} from './metrics/constance/metrics-constance';
+import { MetricsService } from './metrics/metrics.service';
 
 @Module({
   imports: [
@@ -22,7 +33,28 @@ import { DurableName, STREAM_NAME, SubjectName } from '@app/common/types';
       subject: SubjectName.FACEBOOK,
     }),
     RepositoriesModule,
+    PrometheusModule.register({
+      defaultMetrics: {
+        enabled: false,
+      },
+    }),
+    EventEmitterModule.forRoot(),
   ],
-  providers: [FbCollectorService],
+  providers: [
+    FbCollectorService,
+    MetricsService,
+    makeCounterProvider({
+      name: ACCEPTED_EVENTS,
+      help: 'Total number of accepted events',
+    }),
+    makeCounterProvider({
+      name: PROCESSED_EVENTS,
+      help: 'Total number of processed events',
+    }),
+    makeCounterProvider({
+      name: FAILED_EVENTS,
+      help: 'Total number of failed events',
+    }),
+  ],
 })
 export class FbCollectorModule {}
