@@ -9,8 +9,8 @@ async function bootstrap() {
   const app = await NestFactory.create(GatewayModule);
   const configService = app.get(ConfigService);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
-  app.use(bodyParser.json({ limit: '10mb' }));
-  app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+  app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
   app.useLogger(app.get(Logger));
   await app.listen(configService.get('PORT'));
 }
