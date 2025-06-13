@@ -12,6 +12,7 @@ import {
 } from 'nats';
 import { JetStreamReaderService } from '../interfaces';
 import { Event, SubjectName } from '@app/common/types';
+import { Logger } from 'nestjs-pino';
 
 @Injectable()
 export class JetStreamReaderServiceImpl implements JetStreamReaderService {
@@ -21,7 +22,10 @@ export class JetStreamReaderServiceImpl implements JetStreamReaderService {
   private consumer: Consumer;
   private activeEvents: JsMsg[] = [];
 
-  constructor(private readonly nats: NatsConnection) {}
+  constructor(
+    private readonly nats: NatsConnection,
+    private readonly logger: Logger
+  ) {}
 
   async setup(): Promise<void> {
     this.js = this.nats.jetstream();
@@ -40,8 +44,7 @@ export class JetStreamReaderServiceImpl implements JetStreamReaderService {
           retention: RetentionPolicy.Limits,
         });
       } else {
-        // TODO add logger
-        console.error(err);
+        this.logger.error(err);
       }
     }
   }
@@ -58,8 +61,7 @@ export class JetStreamReaderServiceImpl implements JetStreamReaderService {
         filter_subject: subject,
       });
     } catch (err) {
-      // TODO add logger
-      console.error(err);
+      this.logger.error(err);
     } finally {
       this.consumer = await this.js.consumers.get(streamName, durableName);
     }
