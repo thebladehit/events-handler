@@ -7,7 +7,7 @@ export class GatewayController {
   constructor(private readonly gatewayService: GatewayService) {}
 
   @Post('/events')
-  handleEvent(@Body(new ParseArrayPipe({ items: EventDto })) events: EventDto[]) {
+  handleEvent(@Body() events: EventDto[]) {
     return this.gatewayService.handleEvent(events);
   }
 }
