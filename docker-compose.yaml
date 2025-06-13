@@ -4,8 +4,10 @@ services:
   publisher:
     image: andriiuni/events:latest
     restart: always
-    env_file:
-      - .env.publisher
+    environment:
+      EVENT_ENDPOINT: http://gateway:3001/events
+#    env_file:
+#      - .env.publisher
     depends_on:
       - gateway
 
@@ -14,8 +16,13 @@ services:
       context: .
       dockerfile: ./apps/gateway/Dockerfile
       target: development
-    env_file:
-      - ./apps/gateway/.env
+    environment:
+      PORT: 3001
+      NATS_URL: nats://nats:4222
+      DATABASE_URL: "postgresql://postgres:1111@postgres:5432/events?schema=public"
+      BATCH_SIZE: 300
+#    env_file:
+#      - ./apps/gateway/.env
     command: npm run start:gateway:dev
     ports:
       - '3001:3001'
@@ -27,8 +34,13 @@ services:
       context: .
       dockerfile: ./apps/fb-collector/Dockerfile
       target: development
-    env_file:
-      - ./apps/fb-collector/.env
+    environment:
+      PORT: 3002
+      DATABASE_URL: "postgresql://postgres:1111@postgres:5432/events?schema=public"
+      NATS_URL: nats://nats:4222
+      BATCH_SIZE: 300
+#    env_file:
+#      - ./apps/fb-collector/.env
     command: sh -c "npx prisma migrate deploy --schema=libs/common/src/prisma/ && npm run start:fb-collector:dev"
     ports:
       - '3002:3002'
@@ -41,8 +53,13 @@ services:
       context: .
       dockerfile: ./apps/ttk-collector/Dockerfile
       target: development
-    env_file:
-      - ./apps/ttk-collector/.env
+    environment:
+      PORT: 3003
+      NATS_URL: nats://nats:4222
+      DATABASE_URL: "postgresql://postgres:1111@postgres:5432/events?schema=public"
+      BATCH_SIZE: 300
+#    env_file:
+#      - ./apps/ttk-collector/.env
     command: sh -c "npx prisma migrate deploy --schema=libs/common/src/prisma/ && npm run start:ttk-collector:dev"
     ports:
       - '3003:3003'
@@ -55,8 +72,11 @@ services:
       context: .
       dockerfile: ./apps/reporter/Dockerfile
       target: development
-    env_file:
-      - ./apps/reporter/.env
+    environment:
+      PORT: 3004
+      DATABASE_URL: "postgresql://postgres:1111@postgres:5432/events?schema=public"
+#    env_file:
+#      - ./apps/reporter/.env
     command: sh -c "npx prisma migrate deploy --schema=libs/common/src/prisma/ && npm run start:reporter:dev"
     ports:
       - '3004:3004'
